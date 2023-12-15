@@ -1,0 +1,29 @@
+task: acl_arc
+dataset_path: hrithikpiyush/acl-arc
+dataset_name: null
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+description: "Task: Identify the Citation Motives in Research Paper Texts\n
+Objective: The task involves analyzing given excerpts from academic papers to determine the author's purpose or motive for citing other research works. This task is crucial in understanding the context and relevance of the citations within the scholarly communication.\n
+Motives Classification Tags: ['Background','Uses','Compares/Contrasts','Motivation','Continuation','Future']\n
+Instructions: For each text excerpt, select the most appropriate motive from the list. The response should be a single word from the provided categories.\n"
+doc_to_text: "Text Location:{{section_name}}\nText:{{text}}\nMotivation:"
+doc_to_target: "{{intent}}"
+doc_to_choice: ["Background","Uses","Compares/Contrasts","Motivation","Continuation","Future" ]
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+  - metric: f1
+    aggregation: mean
+    higher_is_better: true
+generation_kwargs:
+  until:
+    - "."
+metadata:
+  - version: 0.0
