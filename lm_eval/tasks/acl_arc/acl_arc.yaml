@@ -5,23 +5,18 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "Task: Identify the Citation Motives in Research Paper Texts\n
-Objective: The task involves analyzing given excerpts from academic papers to determine the author's purpose or motive for citing other research works. This task is crucial in understanding the context and relevance of the citations within the scholarly communication.\n
-Motives Classification Tags: ['Background','Uses','Compares/Contrasts','Motivation','Continuation','Future']\n
+description: "Task: Identify the Citation Intents in Research Paper Texts\n
+Objective: The task involves analyzing given excerpts from academic papers to determine the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within the scholarly communication.\n
+Intent Classification Tags: ['background','uses','compares','motivation','continuation','future']\n
 Instructions: For each text excerpt, select the most appropriate motive from the list. The response should be a single word from the provided categories.\n"
-doc_to_text: "Text Location:{{section_name}}\nText:{{text}}\nMotivation:"
+doc_to_text: "Text Location:{{section_name}}\nText:{{text}}\nIntent:"
 doc_to_target: "{{intent}}"
-doc_to_choice: ["Background","Uses","Compares/Contrasts","Motivation","Continuation","Future" ]
+doc_to_choice: [ 'background','uses','compares','motivation','continuation','future','unknow' ]
+process_results: !function utils.process_results
 metric_list:
   - metric: acc
-    aggregation: mean
-    higher_is_better: true
-  - metric: acc_norm
-    aggregation: mean
-    higher_is_better: true
   - metric: f1
-    aggregation: mean
-    higher_is_better: true
+    aggregation: f1_micro
 generation_kwargs:
   until:
     - "."
