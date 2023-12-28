@@ -48,10 +48,10 @@ def process_docs(dataset: datasets.Dataset):
 
 def process_results(doc, results):
     import re
-    intents = ['background', 'uses', 'compares', 'motivation', 'continuation', 'future', 'unknow']
+    intents = ['background', 'uses', 'compares', 'motivation', 'continuation', 'future', 'unknown']
     pattern = '|'.join(intents)
     gold = doc['intent']
     pred = re.findall(pattern, results[0].lower())
-    pred = pred[0] if pred else "unknow"
+    pred = pred[0] if pred else "unknown"
     pred = intents.index(pred)
     return {"f1": (gold, pred), "acc": 1 if gold == pred else 0}

@@ -1,5 +1,5 @@
-task: acl_arc
-dataset_path: hrithikpiyush/acl-arc
+task: scicite
+dataset_path: allenai/scicite
 dataset_name: null
 output_type: generate_until
 training_split: train
@@ -7,11 +7,13 @@ validation_split: validation
 test_split: test
 description: "Task: Identify the Citation Intents in Research Paper Texts\n
 Objective: The task involves analyzing given excerpts from academic papers to determine the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within the scholarly communication.\n
-Intent Classification Tags: ['background','uses','compares','motivation','continuation','future']\n
+Intent Classification Tags:['method','background','result']\n
 Instructions: For each text excerpt, select the most appropriate motive from the list. The response should be a single word from the provided categories.\n"
-doc_to_text: "Text Location:{{section_name}}\nText:{{text}}\nIntent:"
-doc_to_target: "{{intent}}"
-doc_to_choice: [ 'background','uses','compares','motivation','continuation','future','unknown' ]
+doc_to_text: "Text Location:{{sectionName}}\nText:{{string}}\nIntent:"
+doc_to_target: "{{label}}"
+doc_to_choice: [ 'method','background','result','unknown']
+#fewshot_split: train
+process_docs: !function utils.process_docs
 process_results: !function utils.process_results
 metric_list:
   - metric: acc
