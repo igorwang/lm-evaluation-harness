@@ -28,7 +28,7 @@ def process_results(doc, results):
     import re
     intents = ['method', 'background', 'result', 'unknown']
     pattern = '|'.join(intents)
-    gold = doc['intent']
+    gold = doc['label']
     pred = re.findall(pattern, results[0].lower())
     pred = pred[0] if pred else "unknown"
     pred = intents.index(pred)
