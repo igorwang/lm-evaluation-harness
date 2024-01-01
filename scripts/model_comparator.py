@@ -1,15 +1,24 @@
 import argparse
-import numpy as np
-import lm_eval.evaluator
-from lm_eval import tasks
-import scipy.stats
-from typing import Tuple, Dict, List
-import pandas as pd
-import torch
 import os
+from typing import Dict, List, Tuple
+
+import numpy as np
+import pandas as pd
+import scipy.stats
+import torch
+
+import lm_eval.evaluator
+from lm_eval import tasks, utils
+
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-eval_logger = lm_eval.utils.eval_logger
+eval_logger = utils.eval_logger
+
+
+def memory_stats():
+    eval_logger.info(
+        f"Memory allocated: {torch.cuda.memory_allocated() / 1024 ** 2}, reserved: {torch.cuda.memory_reserved() // 1024 ** 2}"
+    )
 
 
 def calculate_z_value(res1: Dict, res2: Dict) -> Tuple[float, float]:
@@ -103,7 +112,10 @@ if __name__ == "__main__":
         device=args.device,
         batch_size=args.batch,
     )
-    torch.cuda.empty_cache()
+    memory_stats()
+    utils.clear_torch_cache()
+    eval_logger.info("Memory stats cleared")
+    memory_stats()
     results_hf = lm_eval.evaluator.simple_evaluate(
         model="hf",
         model_args=f"pretrained={args.pretrained}" + hf_args,

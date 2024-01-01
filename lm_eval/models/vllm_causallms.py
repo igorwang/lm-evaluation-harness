@@ -1,16 +1,19 @@
+import copy
 from collections import defaultdict
-from typing import List, Tuple, Optional, Literal, Union, Any
-from transformers import AutoTokenizer
+from importlib.util import find_spec
+from typing import List, Literal, Optional, Tuple, Union
+
+from tqdm import tqdm
+
+from lm_eval import utils
 from lm_eval.api.instance import Instance
 from lm_eval.api.model import LM
-import copy
-from tqdm import tqdm
 from lm_eval.api.registry import register_model
-from lm_eval import utils
+
 
 try:
-    from vllm import LLM, SamplingParams
     from ray.util.multiprocessing import Pool
+    from vllm import LLM, SamplingParams
     from vllm.transformers_utils.tokenizer import get_tokenizer
 except ModuleNotFoundError:
     pass
@@ -46,6 +49,7 @@ class VLLM(LM):
         batch_size: Union[str, int] = 1,
         max_batch_size=None,
         max_length: int = None,
+        max_model_len: int = None,
         seed: int = 1234,
         gpu_memory_utilization: float = 0.9,
         device: str = "cuda",
@@ -53,15 +57,18 @@ class VLLM(LM):
     ):
         super().__init__()
 
-        try:
-            import vllm
-        except ModuleNotFoundError:
+        if not find_spec("vllm"):
             raise Exception(
-                "attempted to use 'vllm' LM type, but package `vllm` is not installed. \
-please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`",
+                "attempted to use 'vllm' LM type, but package `vllm` is not installed. "
+                "Please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
             )
 
         assert "cuda" in device or device is None, "vLLM only supports CUDA"
+        assert (
+            max_length is None or max_model_len is None
+        ), "Either max_length or max_model_len may be provided, but not both"
+
+        self._max_length = max_model_len if max_model_len is not None else max_length
         self.tensor_parallel_size = int(tensor_parallel_size)
         self.data_parallel_size = int(data_parallel_size)
         self.model_args = {
@@ -74,6 +81,7 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
             "tokenizer_revision": tokenizer_revision,
             "trust_remote_code": trust_remote_code,
             "tensor_parallel_size": int(tensor_parallel_size),
+            "max_model_len": int(self._max_length) if self._max_length else None,
             "swap_space": int(swap_space),
             "quantization": quantization,
             "seed": int(seed),
@@ -89,7 +97,6 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
             tokenizer_revision=tokenizer_revision,
         )
         self.batch_size = batch_size
-        self._max_length = max_length
         self._max_gen_toks = max_gen_toks
 
     @property
@@ -133,7 +140,6 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
         generate: bool = False,
         max_tokens: int = None,
         stop: Optional[List[str]] = None,
-        use_tqdm=True,
         **kwargs,
     ):
         if "do_sample" in kwargs.keys():
@@ -163,7 +169,7 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
         outputs = self.model.generate(
             prompt_token_ids=requests,
             sampling_params=sampling_params,
-            use_tqdm=use_tqdm,
+            use_tqdm=True if self.batch_size == "auto" else False,
         )
 
         return outputs
@@ -188,8 +194,9 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
         for context, continuation in [req.args for req in requests]:
             if context == "":
                 # end of text as context
-                context_enc, continuation_enc = [self.eot_token_id], self.tok_encode(
-                    continuation
+                context_enc, continuation_enc = (
+                    [self.eot_token_id],
+                    self.tok_encode(continuation),
                 )
             else:
                 context_enc, continuation_enc = self._encode_pair(context, continuation)
@@ -260,7 +267,7 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
         for key, re_ord in re_ords.items():
             chunks = utils.chunks(
                 re_ord.get_reordered(),
-                n=self.batch_size if self.batch_size != "auto" else 0,
+                n=int(self.batch_size) if self.batch_size != "auto" else 0,
                 fn=None,
             )
             for chunk in chunks:
@@ -339,7 +346,7 @@ please install vllm via `pip install lm-eval[vllm]` or `pip install -e .[vllm]`"
 
         chunks = utils.chunks(
             re_ord.get_reordered(),
-            n=self.batch_size if self.batch_size != "auto" else 0,
+            n=int(self.batch_size) if self.batch_size != "auto" else 0,
             fn=None,
         )
         pbar = tqdm(total=len(requests), disable=disable_tqdm)
