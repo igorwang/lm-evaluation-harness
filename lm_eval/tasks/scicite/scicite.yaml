@@ -18,7 +18,7 @@ process_results: !function utils.process_results
 metric_list:
   - metric: acc
   - metric: f1
-    aggregation: f1_macro
+    aggregation: !function utils.f1_macro
 generation_kwargs:
   until:
     - "."

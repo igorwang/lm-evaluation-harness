@@ -24,17 +24,14 @@ def f1(items, average='macro'):
     return np.max(fscore)
 
 
-@register_aggregation('f1_macro')
 def f1_macro(items):
     return f1(items, average='macro')
 
 
-@register_aggregation('f1_micro')
 def f1_micro(items):
     return f1(items, average='micro')
 
 
-@register_aggregation('f1_weighted')
 def f1_weighted(items):
     return f1(items, average='weighted')
 
