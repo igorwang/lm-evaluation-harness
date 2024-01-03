@@ -38,17 +38,19 @@ def f1_weighted(items):
 
 def process_docs(dataset: datasets.Dataset):
     def _process(doc):
-        return doc
+        new_doc = {}
+        new_doc['section_name'] = doc['section_name']
+        new_doc['intent'] = doc['intent']
+        new_doc['text'] = doc['text']
+        return new_doc
 
     return dataset.map(_process)
-
-
 def process_results(doc, results):
     import re
-    intents = ['background', 'uses', 'compares', 'motivation', 'continuation', 'future', 'unknown']
+    intents = ['background', 'uses', 'compares', 'motivation', 'continuation', 'future']
     pattern = '|'.join(intents)
     gold = doc['intent']
     pred = re.findall(pattern, results[0].lower())
-    pred = pred[0] if pred else "unknown"
+    pred = pred[0] if pred else "background"
     pred = intents.index(pred)
     return {"f1": (gold, pred), "acc": 1 if gold == pred else 0}

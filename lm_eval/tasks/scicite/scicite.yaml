@@ -5,14 +5,14 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "Task: Identify the Citation Intents in Research Paper Texts\n
-Objective: The task involves analyzing given excerpts from academic papers to determine the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within the scholarly communication.\n
+description: "Task: Analyzing Citation Intent in Academic Papers\n
+Objective: This task requires the examination of selected passages from research papers to discern the author's reasons for referencing other scholarly works. Understanding these intents is essential for grasping the context and significance of these citations in academic discourse.\n
 Intent Classification Tags:['method','background','result']\n
 Instructions: For each text excerpt, select the most appropriate motive from the list. The response should be a single word from the provided categories.\n"
 doc_to_text: "Text Location:{{sectionName}}\nText:{{string}}\nIntent:"
 doc_to_target: "{{label}}"
-doc_to_choice: [ 'method','background','result','unknown']
-#fewshot_split: train
+doc_to_choice: [ 'method','background','result']
+fewshot_split: train
 process_docs: !function utils.process_docs
 process_results: !function utils.process_results
 metric_list:
