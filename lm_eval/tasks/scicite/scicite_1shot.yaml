@@ -1,6 +1,6 @@
 group: scicite-group
-task: scicite
-dataset_path: allenai/scicite
+task: scicite-1shots
+dataset_path: igorwang/scicite_fewshots
 dataset_name: null
 output_type: generate_until
 training_split: train
@@ -9,10 +9,9 @@ test_split: test
 description: "Task: Identify the citation intents in research paper texts by analyzing given excerpts and determining the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within scholarly communication.\n
 Objective: For each text excerpt, select the most appropriate motive from the list of intent classification tags, which includes ['method','background','result'].Your response should be a single word from the provided categories.\n
 Instructions: Please ensure that your selected motive accurately reflects the author's purpose for citing other research works. Your responses should be concise and specific, aligning with the given categories to capture the intent behind each citation.\n"
-doc_to_text: "Where the Text Is Located:{{sectionName}}\nText:{{string}}\nIntent:"
+doc_to_text: "{{fewshots_1}}\n\nWhere the Text Is Located:{{sectionName}}\nText:{{string}}\nIntent:"
 doc_to_target: "{{label}}"
 doc_to_choice: [ 'method','background','result' ]
-fewshot_split: train
 process_docs: !function utils.process_docs
 process_results: !function utils.process_results
 metric_list:

@@ -1,0 +1,3 @@
+include: scicite_1shot.yaml
+task: scicite-5shots
+doc_to_text: "{{fewshots_5}}\n\nWhere the Text Is Located:{{sectionName}}\nText:{{string}}\nIntent:"

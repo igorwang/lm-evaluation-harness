@@ -41,6 +41,9 @@ def process_docs(dataset: datasets.Dataset):
         new_doc['sectionName'] = doc['sectionName']
         new_doc['label'] = doc['label']
         new_doc['string'] = doc['string']
+        new_doc['fewshots_1'] = doc.get('fewshots_1')
+        new_doc['fewshots_5'] = doc.get('fewshots_5')
+        new_doc['fewshots_10'] = doc.get('fewshots_10')
         return new_doc
 
     return dataset.map(_process)
