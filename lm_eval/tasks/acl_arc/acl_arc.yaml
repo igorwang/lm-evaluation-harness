@@ -5,13 +5,12 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "Task: Analyzing Citation Intent in Academic Papers\n
-Objective: This task requires the examination of selected passages from research papers to discern the author's reasons for referencing other scholarly works. Understanding these intents is essential for grasping the context and significance of these citations in academic discourse.\n
-Intent Classification Tags: ['background','uses','compares','motivation','continuation','future']\n
-Instructions: For each text excerpt, select the most appropriate motive from the list. The response should be a single word from the provided categories.\n"
-doc_to_text: "Text Location:{{section_name}}\nText:{{text}}\nIntent:"
+description: "Task: Identify the citation intents in research paper texts by analyzing given excerpts and determining the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within scholarly communication.\n
+Objective: For each text excerpt, select the most appropriate motive from the list of intent classification tags, which includes ['background', 'uses', 'compares', 'motivation', 'continuation', and 'future'].Your response should be a single word from the provided categories.\n
+Instructions: Please ensure that your selected motive accurately reflects the author's purpose for citing other research works. Your responses should be concise and specific, aligning with the given categories to capture the intent behind each citation.\n"
+doc_to_text: "Where the Text Is Located:{{section_name}}\nText:{{text}}\nIntent:"
 doc_to_target: "{{intent}}"
-doc_to_choice: ['background','uses','compares','motivation','continuation','future' ]
+doc_to_choice: [ 'background','uses','compares','motivation','continuation','future' ]
 fewshot_split: train
 process_docs: !function utils.process_docs
 process_results: !function utils.process_results
