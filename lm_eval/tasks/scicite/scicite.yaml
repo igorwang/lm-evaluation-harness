@@ -6,10 +6,34 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "Task: Identify the citation intents in research paper texts by analyzing given excerpts and determining the author's purpose for citing other research works. This task is crucial in understanding the context and relevance of the citations within scholarly communication.\n
-Objective: For each text excerpt, select the most appropriate motive from the list of intent classification tags, which includes ['method','background','result'].Your response should be a single word from the provided categories.\n
-Instructions: Please ensure that your selected motive accurately reflects the author's purpose for citing other research works. Your responses should be concise and specific, aligning with the given categories to capture the intent behind each citation.\n"
-doc_to_text: "Where the Text Is Located:{{sectionName}}\nText:{{string}}\nIntent:"
+description: "From now on, your task is to analyze a given text with the following steps:
+Step 1: Determine where the reference appears in the article.
+Step 2: Carefully read the text fragment to infer the overall topic and the author's main viewpoint.
+Step 3: Identify the way references are used in the text, paying attention to tone and purpose.
+Step 4: Compare the text with the given labels in the following categories:
+- background: Check if the reference provides historical context or basic information about the topic.
+- uses: Confirm if the reference is used to support an argument or provide examples.
+- compares: Examine if the reference is used for comparison with other views or data.
+- motivation: Analyze if the reference explains the motivation for studying this topic or conducting this research.
+- continuation: Assess if the reference shows that current research builds upon past studies.
+- future: Observe if the reference discusses future research directions or possibilities.
+Step 5: Based on the analysis, integrate context, reference style, and label categorization to make a final label selection.
+Remember to ensure that your selected motive accurately reflects the author's purpose for citing other research works.\
+Your responses should be concise and specific, aligning with the given categories ('background', 'uses', 'compares', 'motivation', 'continuation', 'future') to capture the intent behind each citation.
+
+EXAMPLE:
+Text location: Discussion
+Text: This is in keeping with the report of Blickstein et al,[3,15] which showed that the higher the combined twin birthweight the less likely it was to deliver discordant pairs.
+Intent: result
+
+Text location: METHODOLOGY
+Text: We used an active contour algorithm [10] to segment the organs from 340 coronal slices over the two patients.
+Intent: method
+
+Text location: Introduction
+Text: The drug also reduces catecholamine secretion, thereby reducing stress and leading to a modest (10-20%) reduction in heart rate and blood pressure, which may be particularly beneficial in patients with cardiovascular disease.(7) Unlike midazolam, dexmedetomidine does not affect the ventilatory response to carbon dioxide.
+Intent: background"
+doc_to_text: "Text location:{{sectionName}}\nText:{{string}}\nIntent:"
 doc_to_target: "{{label}}"
 doc_to_choice: [ 'method','background','result' ]
 fewshot_split: train
