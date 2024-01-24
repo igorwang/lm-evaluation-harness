@@ -20,7 +20,7 @@ def f1(items, average='macro'):
     unzipped_list = list(zip(*items))
     golds = unzipped_list[0]
     preds = unzipped_list[1]
-    fscore = sklearn.metrics.f1_score(golds, preds, average='macro')
+    fscore = sklearn.metrics.f1_score(golds, preds, average=average)
     return np.max(fscore)
 
 
@@ -70,5 +70,5 @@ def process_results(doc, results):
     result = {
         "f1_macro": (gold, pred_label),
         "f1_micro": (gold, pred_label),
-        "acc": 1 if gold == pred else 0}
+        "acc": 1 if gold == pred_label else 0}
     return result
