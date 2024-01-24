@@ -6,23 +6,26 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "This is an overall citation function classifier for scientific text. 
-Classify cited paper's function into a category.
-Categories: ['method','background','result'].
-Only return one classification label."
-doc_to_text: "Text:{{string}}\nFunction:"
+description: "Evaluate the collective function of references cited together in a given text segment.\n
+Classify their combined role into one of the following categories: 'method', 'background', or 'result'.\n
+First, list CLUES (i.e., keywords, phrases, contextual information, semantic relations, semantic meaning, tones, references) that support the function determination of input.\n
+Second, deduce the diagnostic REASONING process from premises (i.e., clues, input) to analyze the function of these references. Determine if they are used to describe the methods employed in the study (procedures, techniques, or approaches), provide background information (theoretical framework, literature review, historical context), or present results (outcomes, findings, data from the study or previous studies).\n
+Third, based on the identified clues and the diagnostic reasoning process, categorize the collective function of the references into one  categories: 'method', 'background', or 'result'. Conclude the analysis by clearly stating the chosen category in the JSON format: {\"category\": \"label\"}.\n
+Please ensure that the response MUST includes JSON format conclusion : {\"category\": \"label\"}.\n\n"
+doc_to_text: "Text:{{string}}\nCategory:"
 doc_to_target: "{{label}}"
 doc_to_choice: [ 'method', 'background', 'result' ]
 process_docs: !function utils.process_docs
 process_results: !function utils.process_results
 metric_list:
   - metric: acc
-  - metric: f1
+  - metric: f1_macro
     aggregation: !function utils.f1_macro
-  - metric: f1
+  - metric: f1_micro
     aggregation: !function utils.f1_micro
 generation_kwargs:
   until:
     - "."
+  max_gen_toks: 2048
 metadata:
   - version: 0.0

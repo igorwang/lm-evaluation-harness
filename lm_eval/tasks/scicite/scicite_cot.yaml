@@ -24,5 +24,6 @@ metric_list:
 generation_kwargs:
   until:
     - "."
+  max_gen_toks: 2048
 metadata:
   - version: 0.0

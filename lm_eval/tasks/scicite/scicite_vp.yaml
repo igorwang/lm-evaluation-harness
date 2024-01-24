@@ -8,7 +8,7 @@ validation_split: validation
 test_split: test
 description: "Evaluate the collective function of references cited together in a given text segment.\n
 Classify their combined role into one of the following categories: 'method', 'background', or 'result'.\n
-Please ensure that the response includes the chosen category, clearly stated in the JSON format: {\"category\": \"label\"}.\n\n"
+Please ensure that the response MUST includes the chosen category, clearly stated in the JSON format: {\"category\": \"label\"}.\n\n"
 doc_to_text: "Text:{{string}}\nCategory:"
 doc_to_target: "{{label}}"
 doc_to_choice: [ 'method', 'background', 'result' ]
@@ -23,5 +23,6 @@ metric_list:
 generation_kwargs:
   until:
     - "."
+  max_gen_toks: 2048
 metadata:
   - version: 0.0
