@@ -22,7 +22,7 @@ metric_list:
     aggregation: !function utils.f1_micro
 generation_kwargs:
   until:
-    - "."
-  max_gen_toks: 2048
+    - <<END>>
+  max_gen_toks: 512
 metadata:
   - version: 0.0

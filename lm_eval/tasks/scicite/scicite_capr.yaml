@@ -11,7 +11,8 @@ Classify their combined role into one of the following categories: 'method', 'ba
 First, list CLUES (i.e., keywords, phrases, contextual information, semantic relations, semantic meaning, tones, references) that support the function determination of input.\n
 Second, deduce the diagnostic REASONING process from premises (i.e., clues, input) to analyze the function of these references. Determine if they are used to describe the methods employed in the study (procedures, techniques, or approaches), provide background information (theoretical framework, literature review, historical context), or present results (outcomes, findings, data from the study or previous studies).\n
 Third, based on the identified clues and the diagnostic reasoning process, categorize the collective function of the references into one  categories: 'method', 'background', or 'result'. Conclude the analysis by clearly stating the chosen category in the JSON format: {\"category\": \"label\"}.\n
-Please ensure that the response MUST includes JSON format conclusion : {\"category\": \"label\"}.\n\n"
+Please ensure that the response MUST includes JSON format conclusion : {\"category\": \"label\"}.\n
+The content of the response MUST not exceed 150 words.\n\n"
 doc_to_text: "Text:{{string}}\nCategory:"
 doc_to_target: "{{label}}"
 doc_to_choice: [ 'method', 'background', 'result' ]
@@ -25,7 +26,7 @@ metric_list:
     aggregation: !function utils.f1_micro
 generation_kwargs:
   until:
-    - "."
+    - <<END>>
   max_gen_toks: 2048
 metadata:
   - version: 0.0
