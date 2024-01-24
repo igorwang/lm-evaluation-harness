@@ -1,0 +1,27 @@
+group: scicite-group
+task: scicite-vp
+dataset_path: allenai/scicite
+dataset_name: null
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+description: "Evaluate the collective function of references cited together in a given text segment.\n
+Classify their combined role into one of the following categories: 'method', 'background', or 'result'.\n
+Conclude the analysis by clearly stating the chosen category in the json format: '{category:label}'\n\n"
+doc_to_text: "Text:{{string}}\nCategory:"
+doc_to_target: "{{label}}"
+doc_to_choice: [ 'method', 'background', 'result' ]
+process_docs: !function utils.process_docs
+process_results: !function utils.process_results
+metric_list:
+  - metric: acc
+  - metric: f1_macro
+    aggregation: !function utils.f1_macro
+  - metric: f1_micro
+    aggregation: !function utils.f1_micro
+generation_kwargs:
+  until:
+    - "."
+metadata:
+  - version: 0.0

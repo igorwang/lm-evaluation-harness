@@ -13,6 +13,7 @@
 import datasets
 import sklearn.metrics
 import numpy as np
+from lm_eval.api.registry import register_aggregation, register_metric
 
 
 def f1(items, average='macro'):
@@ -41,9 +42,9 @@ def process_docs(dataset: datasets.Dataset):
         new_doc['sectionName'] = doc['sectionName']
         new_doc['label'] = doc['label']
         new_doc['string'] = doc['string']
-        new_doc['fewshots_1'] = doc.get('fewshots_1')
-        new_doc['fewshots_5'] = doc.get('fewshots_5')
-        new_doc['fewshots_10'] = doc.get('fewshots_10')
+        # new_doc['fewshots_1'] = doc.get('fewshots_1')
+        # new_doc['fewshots_5'] = doc.get('fewshots_5')
+        # new_doc['fewshots_10'] = doc.get('fewshots_10')
         return new_doc
 
     return dataset.map(_process)
@@ -51,10 +52,23 @@ def process_docs(dataset: datasets.Dataset):
 
 def process_results(doc, results):
     import re
-    intents = ['method', 'background', 'result']
-    pattern = '|'.join(intents)
-    gold = doc['label']
-    pred = re.findall(pattern, results[0].lower())
-    pred = pred[0] if pred else "background"
-    pred = intents.index(pred)
-    return {"f1": (gold, pred), "acc": 1 if gold == pred else 0}
+    resp = results[0].lower()
+    labels = ['method', 'background', 'result']
+    pattern = '|'.join(labels)
+    # 查找{}
+    pred_label = 'unk'
+    formatted_resp = re.search('\{.*?\}', resp)
+    if formatted_resp:
+        pred = re.findall(pattern, formatted_resp.group())
+        if pred:
+            pred_label = pred[0]
+    else:
+        pred = re.findall(pattern, resp)
+        if pred:
+            pred_label = max(set(pred), key=pred.count)
+    gold = labels[doc['label']]
+    result = {
+        "f1_macro": (gold, pred_label),
+        "f1_micro": (gold, pred_label),
+        "acc": 1 if gold == pred else 0}
+    return result

@@ -5,8 +5,10 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-description: "Classify reference into a primary function category\n 
-Primary function categories: ['background','uses','compares','motivation','continuation','future']\n\n
+description: "Classify cited paper's function into a category\n 
+Categories: ['background','uses','compares','motivation','continuation','future']\n
+Only return one classification label.\n\n
+
 EXAMPLE:\n
 Text location: Discussion\n
 Text: This is in keeping with the report of Blickstein et al,[3,15] which showed that the higher the combined twin birthweight the less likely it was to deliver discordant pairs.\n
@@ -19,7 +21,7 @@ Function: method\n
 Text location: Introduction\n
 Text: The drug also reduces catecholamine secretion, thereby reducing stress and leading to a modest (10-20%) reduction in heart rate and blood pressure, which may be particularly beneficial in patients with cardiovascular disease.(7) Unlike midazolam, dexmedetomidine does not affect the ventilatory response to carbon dioxide.\n
 Function: background\n"
-doc_to_text: "\nText location:{{section_name}}\nText:{{text}}\Function:{{intent}}"
+doc_to_text: "\nText location:{{section_name}}\nText:{{text}}\nFunction:"
 doc_to_target: "{{intent}}"
 doc_to_choice: [ 'background','uses','compares','motivation','continuation','future' ]
 fewshot_split: train

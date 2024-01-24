@@ -1,0 +1,28 @@
+group: scicite-group
+task: scicite-cot
+dataset_path: allenai/scicite
+dataset_name: null
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+description: "This is an overall citation function classifier for scientific text. 
+Classify cited paper's function into a category.
+Categories: ['method','background','result'].
+Only return one classification label."
+doc_to_text: "Text:{{string}}\nFunction:"
+doc_to_target: "{{label}}"
+doc_to_choice: [ 'method', 'background', 'result' ]
+process_docs: !function utils.process_docs
+process_results: !function utils.process_results
+metric_list:
+  - metric: acc
+  - metric: f1
+    aggregation: !function utils.f1_macro
+  - metric: f1
+    aggregation: !function utils.f1_micro
+generation_kwargs:
+  until:
+    - "."
+metadata:
+  - version: 0.0
